@@ -1,22 +1,18 @@
-var express = require("express");
-var path = require("path");
-var open = require("open");
-var livereload = require("livereload");
-var connectLiveReload = require("connect-livereload");
-var chalk = require("chalk");
+import express from "express";
+import path from "path";
+import open from "open";
+import webpack from "webpack";
+import config from "../webpack.config.dev";
 
-var liveReloadServer = livereload.createServer();
-liveReloadServer.watch(path.join(__dirname, "public"));
-liveReloadServer.server.once("connection", () => {
-  setTimeout(() => {
-    liveReloadServer.refresh("/");
-  }, 100);
-});
+const port = 3000;
+const app = express();
+const compiler = webpack(config);
 
-var port = 3000;
-var app = express();
-
-app.use(connectLiveReload());
+app.use(
+  require("webpack-dev-middleware")(compiler, {
+    publicPath: config.output.publicPath,
+  })
+);
 
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "../src/index.html"));
@@ -24,8 +20,8 @@ app.get("/", function (req, res) {
 
 app.listen(port, function (err) {
   if (err) {
-    console.log(chalk.red(err));
+    console.log(err);
   } else {
-    console.log(chalk.greenBright.bold("Starting app in dev mode..."));
+    open("http://localhost:" + port);
   }
 });
