@@ -1,15 +1,24 @@
 import path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
 export default {
   mode: "development",
   devtool: "eval-source-map",
-  entry: "./src/index.js",
+  entry: {
+    main: path.resolve(__dirname, "src/index"),
+    vendor: path.resolve(__dirname, "src/vendor"),
+  },
   output: {
     path: path.resolve(__dirname, "src"),
     publicPath: "/",
-    filename: "bundle.js",
+    filename: "[name].js",
   },
-  plugins: [],
+  plugins: [
+    // Create HTML file that includes reference to bundled JS.
+    new HtmlWebpackPlugin({
+      template: "src/index.html",
+    }),
+  ],
   module: {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, use: ["babel-loader"] },
