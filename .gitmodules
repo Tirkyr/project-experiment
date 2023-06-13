@@ -1,0 +1,3 @@
+[submodule "external/RESTful-web-service"]
+	path = external/RESTful-web-service
+	url = https://github.com/Tirkyr/RESTful-web-service.git
